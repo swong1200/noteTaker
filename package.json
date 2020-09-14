@@ -1,0 +1,22 @@
+{
+  "name": "notetaker",
+  "version": "1.0.0",
+  "description": "An application that will take notes for you.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/swong1200/noteTaker.git"
+  },
+  "author": "Stuart Wong",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/swong1200/noteTaker/issues"
+  },
+  "homepage": "https://github.com/swong1200/noteTaker#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
