@@ -32,21 +32,15 @@ module.exports = function(app) {
   app.post("/api/notes", function(req, res) {
     let notes = req.body;
     console.log(notes);
-    console.log(uuidv4())
+    notes.id = uuidv4();
     database.push(notes);
     console.log(database);
     fs.writeFile("db/db.json", JSON.stringify(database), function(err) {
-
       if (err) {
         return console.log(err);
       }
       res.json(true);
       console.log("Success!");
-    
     });
-    
-    
-
-
   })
 };
