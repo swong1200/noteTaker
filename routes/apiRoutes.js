@@ -20,6 +20,7 @@ module.exports = function(app) {
 
   app.get("/api/notes", function(req, res) {
     res.json(database);
+    console.log(database)
   });
 
 // API POST Requests
@@ -42,5 +43,11 @@ module.exports = function(app) {
       res.json(true);
       console.log("Success!");
     });
-  })
+  });
+
+  app.delete("/api/notes/:id", function(req, res) {
+    let chosenNote = (req.params.id);
+    console.log(chosenNote);
+    res.json(true);
+  });
 };
