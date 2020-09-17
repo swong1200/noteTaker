@@ -52,8 +52,18 @@ module.exports = function(app) {
     console.log(chosenNote);
     fs.readFile("db/db.json", function(err, data) {
       if (err) throw err;
-      console.log(JSON.parse(data));
+      let response = JSON.parse(data);
+      console.log(response);
+      let result = response.filter(obj => obj.id !== chosenNote);
+      console.log(result);
+      fs.writeFile("db/db.json", JSON.stringify(result), function(err) {
+        if (err) {
+          return console.log(err);
+        }
+        console.log("Success!");
+      });
+      
     })
-    res.json(true);
+    res.json(database);
   });
 };
