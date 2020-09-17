@@ -20,7 +20,6 @@ module.exports = function(app) {
 
   app.get("/api/notes", function(req, res) {
     res.json(database);
-    console.log(database)
   });
 
 // API POST Requests
@@ -33,7 +32,10 @@ module.exports = function(app) {
   app.post("/api/notes", function(req, res) {
     let notes = req.body;
     console.log(notes);
+    
     notes.id = uuidv4();
+    
+    console.log(notes);
     database.push(notes);
     console.log(database);
     fs.writeFile("db/db.json", JSON.stringify(database), function(err) {
@@ -48,6 +50,10 @@ module.exports = function(app) {
   app.delete("/api/notes/:id", function(req, res) {
     let chosenNote = (req.params.id);
     console.log(chosenNote);
+    fs.readFile("db/db.json", function(err, data) {
+      if (err) throw err;
+      console.log(JSON.parse(data));
+    })
     res.json(true);
   });
 };
