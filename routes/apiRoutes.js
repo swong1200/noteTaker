@@ -8,9 +8,13 @@ const database = require("../db/db.json");
 const fs = require("fs");
 const util = require("util");
 const { v4: uuidv4 } = require("uuid");
+const { json } = require("express");
 
+// Turn these async functions into promises
 const readFileAsync = util.promisify(fs.readFile);
 const writeFileAsync = util.promisify(fs.writeFile);
+
+
 // ===============================================================================
 // ROUTING
 // ===============================================================================
@@ -23,10 +27,21 @@ module.exports = function (app) {
   // ---------------------------------------------------------------------------
 
   app.get("/api/notes", function (req, res) {
-    res.json(database);
+    async function readData() {
+      try{
+        let data = await readFileAsync('./db/db.json', "utf8")
+        let parseData = JSON.parse(data)
+        console.log(data)
+        console.log(parseData)
+        res.json(parseData);
+      } catch(err){
+        console.log(err)
+      }
+    }
+    readData();
   });
 
-  // API POST Requests
+  // API POST Request
   // Below code handles when a user submits a form and thus submits data to the server.
   // In each of the below cases, when a user submits form data (a JSON object)
   // ...the JSON is pushed to the appropriate JavaScript array
@@ -49,38 +64,27 @@ module.exports = function (app) {
     });
   });
 
+// API DELETE Request
+
   app.delete("/api/notes/:id", function (req, res) {
     let chosenNote = req.params.id;
     console.log(chosenNote);
-
-    //use a for loop to "filter" through array and splice out note
-    for (let i = 0; i < database.length; i++) {
-      if (chosenNote === database[i].id) {
-        database.splice(i, 1);
+    
+    async function deleteChosenNote() {
+      try {
+        const firstPromise = await readFileAsync("db/db.json", "utf8");
+        let read = JSON.parse(firstPromise);
+        let filter = read.filter((obj) => obj.id != chosenNote);
+        console.log("-------------")
+        console.log(filter);
+        await writeFileAsync("./db/db.json", JSON.stringify(filter), "utf8");
+        
+        res.json(filter)
+        console.log("Saved!");
+      } catch (err) {
+        console.log(err);
       }
     }
-    //write file
-    fs.writeFile("db/db.json", JSON.stringify(database, null, 1), (err) => {
-      if (err) throw err;
-      console.log("The file has been saved!");
-    });
-    //return json
-    return res.json(database);
+    deleteChosenNote();
   });
-
-  // async function deleteChosenNote(){
-  //   try {
-  //     const firstPromise = await readFileAsync("db/db.json", "utf8")
-  //     let read = JSON.parse(firstPromise)
-  //     let filter = read.filter((obj) => obj.id !== chosenNote)
-
-  //     await writeFileAsync("db/db.json", JSON.stringify(filter), "utf8");
-
-  //     console.log("Saved!")
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }
-  // deleteChosenNote()
-  // console.log(database)
 };
